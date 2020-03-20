@@ -1,0 +1,14 @@
+{
+  "name": "openapi-diff-action",
+  "version": "1.0.0",
+  "description": "Compare two OpenAPI specs to determine if the newer spec is a major update (breaking changes), minor update (non-breaking changes only), or a patch (no changes)",
+  "main": "index.js",
+  "repository": "https://Kjens93@github.com/evereepay/git-semver-action.git",
+  "author": "Kyler Jensen <15389109+Kjens93@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
+    "openapi-diff": "^0.23.1"
+  }
+}
