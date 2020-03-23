@@ -11,3 +11,5 @@ jobs:
         with:
           head-spec: test/head.yaml
           base-spec: test/base.yaml
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

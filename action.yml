@@ -8,9 +8,6 @@ inputs:
   base-spec:
     description: 'The relative path to the BASE (old) spec'
     required: true
-  pull-request:
-    description: 'The relevant pull request number (example: github.event.pull_request.number)'
-    required: false
   label-on-pr:
     description: "Add a label to the pull request with the semver-compatible type of change detected; possible values: 'major', 'minor', 'patch' (default: true)"
     required: false
@@ -35,5 +32,8 @@ outputs:
     description: 'Whether or not the HEAD spec introduces non-breaking changes'
 
 runs:
-  using: 'node12'
-  main: 'dist/bundle.js'
+  using: docker
+  image: Dockerfile
+  env:
+    OPENAPI_HEAD_SPEC: ${{ inputs.head-spec }}
+    OPENAPI_BASE_SPEC: ${{ inputs.base-spec }}

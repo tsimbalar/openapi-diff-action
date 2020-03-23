@@ -1,0 +1,1 @@
+java -jar target/openapi-diff-action.jar

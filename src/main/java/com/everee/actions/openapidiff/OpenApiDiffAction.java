@@ -24,10 +24,10 @@ class OpenApiDiffAction {
     }
 
     private static ChangedOpenApi readDiff() {
-        var BASE_SPEC = requireVariable("BASE_SPEC");
-        printInfo("Reading BASE spec from %s", BASE_SPEC);
-        var HEAD_SPEC = requireVariable("HEAD_SPEC");
+        var HEAD_SPEC = requireVariable("OPENAPI_HEAD_SPEC");
         printInfo("Reading HEAD spec from %s", HEAD_SPEC);
+        var BASE_SPEC = requireVariable("OPENAPI_BASE_SPEC");
+        printInfo("Reading BASE spec from %s", BASE_SPEC);
         return OpenApiCompare.fromLocations(BASE_SPEC, HEAD_SPEC);
     }
 
@@ -39,7 +39,7 @@ class OpenApiDiffAction {
         var github = initializeGitHub();
         var markdown = new MarkdownRender().render(diff);
         var repository = github.getRepository(requireVariable("GITHUB_REPOSITORY"));
-        var pullRequestNumber = optionalIntVariable("PULL_REQUEST", -1);
+        var pullRequestNumber = optionalIntVariable("INPUT_PULL-REQUEST", -1);
         if (pullRequestNumber == -1) return;
         var pullRequest = repository.getPullRequest(pullRequestNumber);
         pullRequest.comment(markdown);
@@ -58,7 +58,7 @@ class OpenApiDiffAction {
 
     private static GitHub initializeGitHub() throws IOException {
         return new GitHubBuilder()
-                .withOAuthToken(requireVariable("GITHUB_TOKEN"))
+                .withOAuthToken(requireVariable("GITHUB_TOKEN"), requireVariable("GITHUB_ACTOR"))
                 .withConnector(initializeGitHubHttpConnector())
                 .build();
     }
