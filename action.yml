@@ -2,12 +2,15 @@ name: 'OpenAPI Diff Action'
 description: 'Compare two OpenAPI specs to determine if the newer spec is a major update (breaking changes), minor update (non-breaking changes only), or a patch (no changes)'
 
 inputs:
-  head:
+  head-spec:
     description: 'The relative path to the HEAD (new) spec'
     required: true
-  base:
+  base-spec:
     description: 'The relative path to the BASE (old) spec'
     required: true
+  pull-request:
+    description: 'The relevant pull request number (example: github.event.pull_request.number)'
+    required: false
   label-on-pr:
     description: "Add a label to the pull request with the semver-compatible type of change detected; possible values: 'major', 'minor', 'patch' (default: true)"
     required: false
