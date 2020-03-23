@@ -39,11 +39,14 @@ class OpenApiDiffAction {
         var github = initializeGitHub();
         var markdown = new MarkdownRender().render(diff);
         var repository = github.getRepository(requireVariable("GITHUB_REPOSITORY"));
-        var pullRequestNumber = optionalIntVariable("INPUT_PULL-REQUEST", -1);
-        if (pullRequestNumber == -1) return;
-        var pullRequest = repository.getPullRequest(pullRequestNumber);
-        pullRequest.comment(markdown);
-        printInfo("Added comment to pull request " + pullRequestNumber);
+        var pullRequestNumber = optionalIntVariable("PULL_REQUEST_ID", -1);
+        if (pullRequestNumber == -1) {
+            printInfo("No pull request number provided for this execution; skipping comment");
+        } else {
+            var pullRequest = repository.getPullRequest(pullRequestNumber);
+            pullRequest.comment(markdown);
+            printInfo("Added comment to pull request " + pullRequestNumber);
+        }
     }
 
     private static void exitWithAppropriateStatusCode(ChangedOpenApi diff) {

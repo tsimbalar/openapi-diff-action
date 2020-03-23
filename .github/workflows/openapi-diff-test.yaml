@@ -1,6 +1,6 @@
 name: openapi-diff-test
 
-on: [push]
+on: [pull_request]
 
 jobs:
   check:
@@ -11,5 +11,6 @@ jobs:
         with:
           head-spec: test/head.yaml
           base-spec: test/base.yaml
+          pull-request: ${{ github.event.pull_request.number }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
