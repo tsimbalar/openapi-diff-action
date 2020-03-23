@@ -8,9 +8,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
-        with:
-          head-spec: test/head.yaml
-          base-spec: test/base.yaml
-          pull-request: ${{ github.event.pull_request.number }}
         env:
+          HEAD_SPEC: test/head.yaml
+          BASE_SPEC: test/base.yaml
+          PULL_REQUEST: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ github.token }}

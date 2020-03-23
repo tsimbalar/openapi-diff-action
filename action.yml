@@ -1,29 +1,6 @@
 name: 'OpenAPI Diff Action'
 description: 'Compare two OpenAPI specs to determine if the newer spec is a major update (breaking changes), minor update (non-breaking changes only), or a patch (no changes)'
 
-inputs:
-  head-spec:
-    description: 'The relative path to the HEAD (new) spec'
-    required: true
-  base-spec:
-    description: 'The relative path to the BASE (old) spec'
-    required: true
-  pull-request:
-    description: 'The relevant pull request number'
-    required: false
-  label-on-pr:
-    description: "Add a label to the pull request with the semver-compatible type of change detected; possible values: 'major', 'minor', 'patch' (default: true)"
-    required: false
-    default: 'true'
-  comment-on-pr:
-    description: 'Add or update a comment to the pull request with information about the detected changes (default: true)'
-    required: false
-    default: 'true'
-  warn-on-deprecated-removal:
-    description: 'Indicates that the removal of deprecated elements should issue a warning rather than an error (default: true)'
-    required: false
-    default: 'true'
-
 outputs:
   change-type:
     description: "The semver-compatible type of change detected; possible values: 'major', 'minor', 'patch'"
@@ -37,7 +14,3 @@ outputs:
 runs:
   using: docker
   image: Dockerfile
-  env:
-    OPENAPI_HEAD_SPEC: ${{ inputs.head-spec }}
-    OPENAPI_BASE_SPEC: ${{ inputs.base-spec }}
-    PULL_REQUEST_ID: ${{ inputs.pull-request }}
