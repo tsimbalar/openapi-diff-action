@@ -1,5 +1,5 @@
 name: 'OpenAPI Diff Action'
-description: 'Compare two OpenAPI specs to determine if the newer spec contains breaking or non-breaking changes'
+description: 'Find breaking and non-breaking changes in OpenAPI specs'
 
 branding:
   icon: copy
@@ -12,17 +12,9 @@ inputs:
   base-spec:
     description: 'The relative path or http url of the BASE (old) spec'
     required: true
-  pull-request:
-    description: 'The relevant pull request number'
-    required: false
-  add-label-to-pull-request:
-    description: "Add a label to the pull request with the semver-compatible type of change detected; possible values: 'major', 'minor', 'patch' (default: true)"
+  github-token:
+    description: 'Must be in form github-token: ${{ github.token }}; this token is used to add comments and labels to pull requests'
     required: true
-    default: 'true'
-  add-comment-to-pull-request:
-    description: 'Add or update a comment to the pull request with information about the detected changes (default: true)'
-    required: true
-    default: 'true'
 
 outputs:
   classification:

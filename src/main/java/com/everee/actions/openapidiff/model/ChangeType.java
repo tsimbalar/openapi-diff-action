@@ -1,4 +1,4 @@
-package com.everee.actions.openapidiff;
+package com.everee.actions.openapidiff.model;
 
 import lombok.RequiredArgsConstructor;
 

@@ -26,6 +26,11 @@
             <version>1.108</version>
         </dependency>
         <dependency>
+            <groupId>org.codejargon.feather</groupId>
+            <artifactId>feather</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.kjens93.actions.toolkit</groupId>
             <artifactId>actions-toolkit-core</artifactId>
             <version>${actions-toolkit.version}</version>
@@ -75,7 +80,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.everee.actions.openapidiff.Action</mainClass>
+                                    <mainClass>com.everee.actions.openapidiff.OpenApiDiffAction</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

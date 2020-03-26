@@ -1,4 +1,4 @@
-package com.everee.actions.openapidiff;
+package com.everee.actions.openapidiff.util;
 
 import lombok.NonNull;
 
@@ -7,8 +7,9 @@ import java.util.ResourceBundle;
 
 public abstract class MessageUtils {
 
+  private static final ResourceBundle bundle = ResourceBundle.getBundle("messages");
+
   public static String getMessage(@NonNull String key, Object... args) {
-    var bundle = ResourceBundle.getBundle("messages");
     var pattern = bundle.getString(key);
     return MessageFormat.format(pattern, args);
   }
