@@ -25,44 +25,54 @@ public abstract class PullRequestUtils {
   private static final String descriptionFailure = getMessage("pr.comment.description.failure");
 
   public static void addLabelToPullRequest(ChangedOpenApi diff) throws IOException {
-    if (isNotBlank(Core.getInput("pull-request"))) {
-      if (Core.getInput("add-label-to-pull-request", true).equals("true")) {
-        var changeType = ChangeTypeUtils.getChangeType(diff);
-        var pullRequest = GitHubUtils.pullRequest;
-        var pullRequestId = pullRequest.getId();
-        var changeTypeLabelName = changeType.labelName;
-        GitHubLabelUtils.applyOasLabel(pullRequest, changeType);
-        Core.info(getMessage("pr.output.label.applied", changeTypeLabelName, pullRequestId));
+    Core.startGroup("Adding label to pull request");
+    try {
+      if (isNotBlank(Core.getInput("pull-request"))) {
+        if (Core.getInput("add-label-to-pull-request", true).equals("true")) {
+          var changeType = ChangeTypeUtils.getChangeType(diff);
+          var pullRequest = GitHubUtils.pullRequest;
+          var pullRequestNumber = pullRequest.getNumber();
+          var changeTypeLabelName = changeType.labelName;
+          GitHubLabelUtils.applyOasLabel(pullRequest, changeType);
+          Core.info(getMessage("pr.output.label.applied", changeTypeLabelName, pullRequestNumber));
+        } else {
+          Core.info(getMessage("pr.output.flag.skipping.label"));
+        }
       } else {
-        Core.info(getMessage("pr.output.flag.skipping.label"));
+        Core.info(getMessage("pr.output.notfound.skipping.label"));
       }
-    } else {
-      Core.info(getMessage("pr.output.notfound.skipping.label"));
+    } finally {
+      Core.endGroup();
     }
   }
 
   public static void addCommentToPullRequest(ChangedOpenApi diff) throws IOException {
-    if (isNotBlank(Core.getInput("pull-request"))) {
-      if (Core.getInput("add-comment-to-pull-request", true).equals("true")) {
-        var commentBody = createCommentBody(diff);
-        var pullRequest = GitHubUtils.pullRequest;
-        var existingComment = findExistingComment(pullRequest);
-        if (existingComment != null) {
-          existingComment.update(commentBody);
-          var commentId = existingComment.getId();
-          var pullRequestId = pullRequest.getId();
-          Core.info(getMessage("pr.output.comment.created", commentId, pullRequestId));
+    Core.startGroup("Adding comment to pull request");
+    try {
+      if (isNotBlank(Core.getInput("pull-request"))) {
+        if (Core.getInput("add-comment-to-pull-request", true).equals("true")) {
+          var commentBody = createCommentBody(diff);
+          var pullRequest = GitHubUtils.pullRequest;
+          var existingComment = findExistingComment(pullRequest);
+          if (existingComment != null) {
+            existingComment.update(commentBody);
+            var commentId = existingComment.getId();
+            var pullRequestNumber = pullRequest.getNumber();
+            Core.info(getMessage("pr.output.comment.created", commentId, pullRequestNumber));
+          } else {
+            var newComment = pullRequest.comment(commentBody);
+            var commentId = newComment.getId();
+            var pullRequestNumber = pullRequest.getNumber();
+            Core.info(getMessage("pr.output.comment.updated", commentId, pullRequestNumber));
+          }
         } else {
-          var newComment = pullRequest.comment(commentBody);
-          var commentId = newComment.getId();
-          var pullRequestId = pullRequest.getId();
-          Core.info(getMessage("pr.output.comment.updated", commentId, pullRequestId));
+          Core.info(getMessage("pr.output.flag.skipping.comment"));
         }
       } else {
-        Core.info(getMessage("pr.output.flag.skipping.comment"));
+        Core.info(getMessage("pr.output.notfound.skipping.comment"));
       }
-    } else {
-      Core.info(getMessage("pr.output.notfound.skipping.comment"));
+    } finally {
+      Core.endGroup();
     }
   }
 
