@@ -74,6 +74,10 @@ Ensure your workflow that invokes the OpenAPI Diff Action on pull requests, e.g.
 on: [pull_request]
 ```
 
+## Credits:
+
+This action uses [quen2404/openapi-diff](https://github.com/quen2404/openapi-diff) under the hood to generate the underlying diff.
+
 ---
 
 [License](LICENSE.md)
