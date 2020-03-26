@@ -13,7 +13,7 @@ inputs:
     description: 'The relative path or http url of the BASE (old) spec'
     required: true
   github-token:
-    description: 'Must be in form github-token: ${{ github.token }}; this token is used to add comments and labels to pull requests'
+    description: 'A personal access token to use; this token is used to add comments and labels to pull requests'
     required: true
 
 outputs:
