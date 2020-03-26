@@ -16,8 +16,8 @@ jobs:
         with:
           ref: ${{ github.base_ref }}
           path: base
-      - name: Run OpenAPI Diff
-        uses: ./
+      - name: Run OpenAPI Diff (from HEAD revision)
+        uses: ./head
         with:
           head-spec: head/openapi.yaml
           base-spec: base/openapi.yaml
