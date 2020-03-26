@@ -26,8 +26,8 @@ public class PullRequestLabelManager {
     var changeType = changeTypeManager.getChangeType();
     var labelToAdd = repositoryLabelManager.ensureLabel(changeType);
     var labelsToRemove = getLabels(not(labelToAdd::equals));
-    pullRequest.addLabels(labelToAdd);
     pullRequest.removeLabels(labelsToRemove);
+    pullRequest.addLabels(labelToAdd);
   }
 
   private List<GHLabel> getLabels(Predicate<GHLabel> filter) throws IOException {
