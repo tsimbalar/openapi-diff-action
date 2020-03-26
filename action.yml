@@ -1,5 +1,9 @@
 name: 'OpenAPI Diff Action'
-description: 'Compare two OpenAPI specs to determine if the newer spec is a major update (breaking changes), minor update (non-breaking changes only), or a patch (no changes)'
+description: 'Compare two OpenAPI specs to determine if the newer spec contains breaking or non-breaking changes'
+
+branding:
+  icon: copy
+  color: green
 
 inputs:
   head-spec:

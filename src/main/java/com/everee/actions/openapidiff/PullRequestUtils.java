@@ -58,12 +58,12 @@ public abstract class PullRequestUtils {
             existingComment.update(commentBody);
             var commentId = existingComment.getId();
             var pullRequestNumber = pullRequest.getNumber();
-            Core.info(getMessage("pr.output.comment.created", commentId, pullRequestNumber));
+            Core.info(getMessage("pr.output.comment.updated", commentId, pullRequestNumber));
           } else {
             var newComment = pullRequest.comment(commentBody);
             var commentId = newComment.getId();
             var pullRequestNumber = pullRequest.getNumber();
-            Core.info(getMessage("pr.output.comment.updated", commentId, pullRequestNumber));
+            Core.info(getMessage("pr.output.comment.created", commentId, pullRequestNumber));
           }
         } else {
           Core.info(getMessage("pr.output.flag.skipping.comment"));
