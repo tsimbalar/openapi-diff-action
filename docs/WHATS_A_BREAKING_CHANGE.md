@@ -43,13 +43,13 @@ Marking an _optional_ property as _required_ has the same effect as adding a new
 
 ### Removal of a Required Property from the Response Body of an Existing Endpoint
 
-> _Example: "A 'required' property `prop1` was removed from the response body of the `GET /v1/pets` endpoint."
+> _Example: "A 'required' property `prop1` was removed from the response body of the `GET /v1/pets` endpoint."_
 
 The OpenAPI spec allows developers to mark response body properties as required. The removal of one of these required properties constitutes a breaking change. If an existing client attempts to call an endpoint that was modified in this way, it could produce a client-side error such as a `NullPointerException`. As a non-breaking alternative, consider marking the endpoint as _deprecated_ and making a new endpoint with a new version. As a preventative measure, consider marking response body properties as _optional_ to begin with.
 
 ### Changing a Required Property to Optional in the Response Body of an Existing Endpoint
 
-> _Example: "A 'required' property `prop1` was marked as 'optional' in the response body of the `GET /v1/pets` endpoint."
+> _Example: "A 'required' property `prop1` was marked as 'optional' in the response body of the `GET /v1/pets` endpoint."_
 
 Marking a _required_ property as _optional_ has the same effect as removing an existing, required proprty from an existing endpoint's response body. If an existing client attempts to call an endpoint that was modified in this way, it could produce a client-side error such as a `NullPointerException`. As a non-breaking alternative, consider marking the endpoint as _deprecated_ and making a new endpoint with a new version.
 
