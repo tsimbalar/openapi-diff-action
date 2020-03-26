@@ -8,101 +8,61 @@ When running on `pull_request` events, a label will also be added to the PR with
 
 ## Usage
 
-The action's step needs to run after your test suite has outputted an LCOV file. Most major test runners can be configured to do so; if you're using Node, see more info [here](https://github.com/nickmerwin/node-coveralls).
+This action needs two OpenAPI spec files to compare in order to run. Your workflow may need to check out multiple branches of a repo or run additional steps to ensure that these files exist.
 
 ### Inputs:
 
-| Name                  | Requirement | Description |
-| --------------------- | ----------- | ----------- |
-| `github-token`        | _required_ | Must be in form `github-token: ${{ secrets.GITHUB_TOKEN }}`; Coveralls uses this token to verify the posted coverage data on the repo and create a new check based on the results. It is built into Github Actions and does not need to be manually specified in your secrets store. [More Info](https://help.github.com/en/articles/virtual-environments-for-github-actions#github_token-secret)|
-| `path-to-lcov`        | _optional_ | Default: "./coverage/lcov.info". Local path to the lcov output file produced by your test suite. An error will be thrown if the file can't be found. This is the file that will be sent to the Coveralls API. |
-| `parallel`            | _optional_ | Set to true for parallel (or matrix) based steps, where multiple posts to Coveralls will be performed in the check. |
-| `parallel-finished`   | _optional_ | Set to true in the last job, after the other parallel jobs steps have completed, this will send a webhook to Coveralls to set the build complete. |
-| `coveralls-endpoint`  | _optional_ | Hostname and protocol: `https://<host>`; Specifies a [Coveralls Enterprise](https://enterprise.coveralls.io/) hostname. |
+- `head-spec` _(required)_: Local path or http URL to the new (HEAD) OpenAPI spec file. An error will be thrown if the file can't be found.
+- `base-spec` _(required)_: Local path or http URL to the old (BASE) OpenAPI spec file. An error will be thrown if the file can't be found.
+- `github-token` _(required)_: Must be in form `${{ github.token }}` or `${{ secrets.GITHUB_TOKEN }}`; This token is used to add labels and comments to pull requests. It is built into Github Actions and does not need to be manually specified in your secrets store. [More Info](https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#github-context)
 
 ### Outputs:
 
-* `coveralls-api-response`: JSON response from the Coveralls API with a status code and url for the Job on Coveralls.
+- `classification`: A string representing the type of change detected between the two OpenAPI specs. Possible values: 
+  - `major`: Indicates that the HEAD spec introduces at least one _incompatible_ or "breaking" changes
+  - `minor`: Indicates that the HEAD spec introduces only _compatible_ or "non-breaking" changes
+  - `patch`: Indicates that the HEAD spec does not introduce any changes at all
 
-### Standard Example:
+### Example:
 
-* This example assumes you're building a Node project using the command `make test-coverage`, demo here: [nickmerwin/node-coveralls](https://github.com/nickmerwin/node-coveralls)
+This following example assumes that your repository contains a valid OpenAPI spec file called `openapi.yaml` in the repository root. 
 
 ```yaml
-on: ["push", "pull_request"]
+on: [pull_request]
 
-name: Test Coveralls
+name: openapi-diff
 
 jobs:
 
-  build:
-    name: Build
+  check:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v1
-
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
+    - name: Check out HEAD revision
+      uses: actions/checkout@v2
       with:
-        node-version: 10.x
-
-    - name: npm install, make test-coverage
-      run: |
-        npm install
-        make test-coverage
-
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
+        ref: ${{ github.head_ref }}
+        path: head
+    - name: Check out BASE revision
+      uses: actions/checkout@v2
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        ref: ${{ github.base_ref }}
+        path: base
+    - name: Run OpenAPI Diff (from HEAD revision)
+      uses: evereepay/openapi-diff-action@v1
+      with:
+        head-spec: head/openapi.yaml
+        base-spec: base/openapi.yaml
+        github-token: ${{ github.token }}
 ```
 
-### Complete Parallel Job Example:
+## Demos
 
-```yaml
-on: ["push", "pull_request"]
+- [Example PR with Breaking Changes (Major)](https://github.com/evereepay/openapi-diff-action/pull/2)
 
-name: Test Coveralls Parallel
+- [Example PR with Only Non-breaking Changes (Minor)](https://github.com/evereepay/openapi-diff-action/pull/3)
 
-jobs:
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-
-    - uses: actions/checkout@v1
-
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 10.x
-
-    - name: npm install, make test-coverage
-      run: |
-        npm install
-        make test-coverage
-
-    - name: Coveralls Parallel
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        parallel: true
-        path-to-lcov: ./coverage/lcov.info # optional (default value)
-
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        parallel-finished: true
-```
-
-The "Coveralls Finished" step needs to run after all other steps have completed; it will let Coveralls know that all jobs in the build are done and aggregate coverage calculation can be calculated and notifications sent.
-
-## Demo
-
-![demo](https://s3.amazonaws.com/assets.coveralls.io/Coveralls%20Github%20Action%20Demo%20-%20trimmed%20-%204.8x720.gif)
+- [Example PR with No API Changes at All (Patch)](https://github.com/evereepay/openapi-diff-action/pull/4)
 
 ### Steps shown:
 
@@ -117,25 +77,17 @@ The "Coveralls Finished" step needs to run after all other steps have completed;
 
 ## Troubleshooting:
 
-### Coveralls comments aren't added to my pull request
+### Breaking change report comments or classification labels aren't added to my pull request
 
-Ensure your workflow that invokes the Coveralls action runs on pull requests, e.g.:
-
-```yaml
-on: ["push", "pull_request"]
-```
-
-### Coveralls responds with "cannot find matching repository"
-
-Ensure your workflow yaml line for the GitHub token matches *exactly*:
+Ensure your workflow that invokes the OpenAPI Diff Action on pull requests, e.g.:
 
 ```yaml
-github-token: ${{ secrets.GITHUB_TOKEN }}
+on: [pull_request]
 ```
 
 ---
 
-## [MIT License](LICENSE.md)
+[License](LICENSE.md)
 
-## [Contributing](CONTRIBUTING.md)
+[Contributing](CONTRIBUTING.md)
 
