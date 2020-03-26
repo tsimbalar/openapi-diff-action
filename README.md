@@ -6,6 +6,8 @@ When running on `pull_request` events, a comment will be added to the PR with a 
 
 When running on `pull_request` events, a label will also be added to the PR with the _classification_ (`major`, `minor`, or `patch`) of the diff.
 
+This has now been modified.
+
 ## Usage
 
 The action's step needs to run after your test suite has outputted an LCOV file. Most major test runners can be configured to do so; if you're using Node, see more info [here](https://github.com/nickmerwin/node-coveralls).
