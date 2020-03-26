@@ -77,6 +77,5 @@ on: [pull_request]
 ## Credits:
 
 - This action uses [quen2404/openapi-diff](https://github.com/quen2404/openapi-diff) under the hood to generate the underlying diff.
-
 - [License](LICENSE.md)
 
