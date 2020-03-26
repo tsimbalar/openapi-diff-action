@@ -49,7 +49,7 @@ jobs:
         ref: ${{ github.base_ref }}
         path: base
     - name: Run OpenAPI Diff (from HEAD revision)
-      uses: evereepay/openapi-diff-action@v1
+      uses: evereepay/openapi-diff-action@v1.0.0-beta.1
       with:
         head-spec: head/openapi.yaml
         base-spec: base/openapi.yaml
