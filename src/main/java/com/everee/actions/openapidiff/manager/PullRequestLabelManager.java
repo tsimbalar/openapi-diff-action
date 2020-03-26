@@ -25,7 +25,7 @@ public class PullRequestLabelManager {
     if (pullRequest == null) return;
     var changeType = changeTypeManager.getChangeType();
     var labelToAdd = repositoryLabelManager.ensureLabel(changeType);
-    var labelsToRemove = getLabels(not(changeType.labelName::equals));
+    var labelsToRemove = getLabels(not(changeType.labelName::equalsIgnoreCase));
     pullRequest.addLabels(labelToAdd);
     pullRequest.removeLabels(labelsToRemove);
   }

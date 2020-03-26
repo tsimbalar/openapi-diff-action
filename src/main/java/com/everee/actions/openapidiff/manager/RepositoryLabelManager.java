@@ -2,6 +2,7 @@ package com.everee.actions.openapidiff.manager;
 
 import com.everee.actions.openapidiff.model.ChangeType;
 import lombok.RequiredArgsConstructor;
+import org.kohsuke.github.GHFileNotFoundException;
 import org.kohsuke.github.GHLabel;
 import org.kohsuke.github.GHRepository;
 
@@ -19,12 +20,12 @@ public class RepositoryLabelManager {
     var name = changeType.labelName;
     var color = changeType.labelColor;
     var description = changeType.labelDescription;
-    var existingLabel = repository.getLabel(name);
-    if (existingLabel != null) {
+    try {
+      var existingLabel = repository.getLabel(name);
       existingLabel.setColor(color);
       existingLabel.setDescription(description);
       return existingLabel;
-    } else {
+    } catch (GHFileNotFoundException e) {
       return repository.createLabel(name, color, description);
     }
   }
