@@ -25,15 +25,15 @@ public class PullRequestLabelManager {
     if (pullRequest == null) return;
     var changeType = changeTypeManager.getChangeType();
     var labelToAdd = repositoryLabelManager.ensureLabel(changeType);
-    var labelsToRemove = getLabels(not(changeType.labelName::equalsIgnoreCase));
+    var labelsToRemove = getLabels(not(labelToAdd::equals));
     pullRequest.addLabels(labelToAdd);
     pullRequest.removeLabels(labelsToRemove);
   }
 
-  private List<GHLabel> getLabels(Predicate<String> filter) throws IOException {
+  private List<GHLabel> getLabels(Predicate<GHLabel> filter) throws IOException {
     return pullRequest.getLabels().stream()
         .filter(l -> l.getName().startsWith("oas:"))
-        .filter(l -> filter.test(l.getName()))
+        .filter(filter)
         .collect(Collectors.toList());
   }
 }
