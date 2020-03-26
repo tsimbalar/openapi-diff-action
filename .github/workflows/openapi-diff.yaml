@@ -22,4 +22,3 @@ jobs:
           head-spec: head/openapi.yaml
           base-spec: base/openapi.yaml
           github-token: ${{ github.token }}
-        continue-on-error: true
