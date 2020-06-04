@@ -1,3 +1,4 @@
+
 # OpenAPI Diff Action
 
 This GitHub Action compares two OpenAPI (3.x) specs to determine if the newer (HEAD) spec introduces breaking or non-breaking changes.
